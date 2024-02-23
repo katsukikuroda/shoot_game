@@ -22,7 +22,7 @@ p_v = 3
 
 # 2.3 player の laser に関する設定
 p_lasers = []
-p_laser_v = 8
+p_laser_v = 10
 
 # 2.4 enemy に関する設定
 e_v = 1
@@ -61,11 +61,15 @@ timer_height = 70
 scene = 0
 
 # 2.10 - 画像の読み込み
-player = pygame.image.load("resources/images/player.png")
+player = pygame.image.load("resources/images/myplayer2.jpeg")
+player = pygame.transform.scale(player, (64, 64))
 castle = pygame.image.load("resources/images/castle.png")
-p_laser_surface = pygame.image.load("resources/images/p_laser.png")
-enemy_surface = pygame.image.load("resources/images/enemy.png")
-e_laser_surface = pygame.image.load("resources/images/e_laser.png")
+p_laser_surface = pygame.image.load("resources/images/p_laser.jpeg")
+p_laser_surface = pygame.transform.scale(p_laser_surface, (40, 40))
+enemy_surface = pygame.image.load("resources/images/e_player.jpeg")
+enemy_surface = pygame.transform.scale(enemy_surface, (64,64))
+e_laser_surface = pygame.image.load("resources/images/e_laser.jpeg")
+e_laser_surface = pygame.transform.scale(e_laser_surface, (40, 40))
 
 # 2.11 - 画像のサイズ
 p_width = player.get_width()
@@ -86,8 +90,8 @@ p_hit_enemy_counter = 0
 fight_time_counter = 0
 
 # 2.13 - 音声の読み込み
-p_laser_sound = mixer.Sound("./resources/se/p_laser.mp3")
-p_laser_hit_sound = mixer.Sound("./resources/se/p_laser_hit.mp3")
+p_laser_sound = mixer.Sound("./resources/se/mylaser2.mp3")
+p_laser_hit_sound = mixer.Sound("./resources/se/mylaser.mp3")
 e_laser_sound = mixer.Sound("./resources/se/e_laser.mp3")
 e_laser_castle_hit_sound = mixer.Sound("./resources/se/e_laser_castle_hit.mp3")
 
@@ -281,9 +285,12 @@ while True:
                 scene = 1
 
             # 10.1 - ゲーム中にスペースキーを押したらレーザーを発射する
-
-            # ここでレーザーを発射するコードを入力
-
+            if event.key == K_SPACE and scene == 1:
+                p_lasers.append(
+                    [p_x + p_width / 2 - p_laser_width / 2, p_y - p_laser_height]
+                )
+                p_laser_counter += 1
+                p_laser_sound.play()
             # 10.2 - Score 画面で t を押したらスタート画面へ戻る
             if event.key == K_t and scene == 2:
                 castle_hp_list = [castle_hp_init] * 4
@@ -306,5 +313,16 @@ while True:
                 scene = 1
 
     # 11 - player の動作
-
-    # ここでプレイヤーを動かすコードを入力
+    pressed_key = pygame.key.get_pressed()
+    if pressed_key[K_LEFT]:
+        if p_x > 0:
+            p_x -= p_v
+    if pressed_key[K_RIGHT]:
+        if p_x < WIDTH - p_width:
+            p_x += p_v 
+    if pressed_key[K_UP]:
+        if p_y > 0 + timer_height:
+            p_y -= p_v
+    if pressed_key[K_DOWN]:
+        if p_y < HEIGHT - p_height * 2.5:
+            p_y += p_v
